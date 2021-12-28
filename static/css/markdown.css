@@ -1,0 +1,27 @@
+blockquote {
+    border-left: #1b76c4 5px solid;
+    background: #ececec;
+    padding: 1rem 0 1rem 1rem;
+}
+
+blockquote > :last-child {
+	margin-bottom: 0;
+}
+
+#post_left_side > blockquote {
+    /* outer blockquote */
+    padding-right: 1rem;
+}
+
+thead {
+	background: #ececec
+}
+
+thead, tbody, th, tr, td {
+    border: #ccc 1px solid;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 0.75rem;
+}

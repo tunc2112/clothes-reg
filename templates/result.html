@@ -1,0 +1,16 @@
+{% extends "core.html" %}
+
+{% set title = "Demo Result" %}
+
+{% block container %}
+	{% if src_filename %}
+	<div>
+		<h2>Source image</h2>
+		<img src="{{ src_filename }}">
+	</div>
+	<div>
+		<h2>Result</h2>
+		<div>{{ tags|join(', ') }}</div>
+	</div>
+	{% endif %}
+{% endblock container %}

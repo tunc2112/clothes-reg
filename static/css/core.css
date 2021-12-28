@@ -1,0 +1,65 @@
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+
+    margin: 0;
+    padding: 0;
+}
+
+body > .container {
+    flex: 1 0 auto;
+    margin: 70px auto 15px;
+}
+
+.footer {
+    flex: 0 0;
+    width: 100%;
+    background-color: #212121;
+    color: #ccc;
+    padding: 10px;
+}
+
+#navbarNav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.search_btn {
+    margin-left: 10px;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    margin: 0.3rem 0;
+}
+
+.subtitle > span {
+    margin-right: 0.4rem;
+    color: #555;
+}
+
+.comment_href {
+    color: inherit;
+}
+
+.tag_badge {
+    padding: 0.1rem 0.4rem;
+    font-size: 0.9rem;
+    border-radius: 0.2rem;
+}
+
+.pinned_badge {
+    font-size: 1.125rem;
+}
+
+.listing_post_title {
+    font-size: 1.5rem;
+    color: black;
+}
+
+.emoji {
+    width: 1.25em;
+    height: 1.25em;
+}

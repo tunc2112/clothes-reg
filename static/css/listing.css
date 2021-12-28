@@ -1,0 +1,15 @@
+.listing_div {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.badge_listing_col {
+    /* flex: 0 0 20%; */
+    width: 20%;
+    margin-bottom: 10px;
+}
+
+.project_card {
+    width: 18rem;
+    margin: 1% 1% 1% 0;
+}

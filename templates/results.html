@@ -1,0 +1,21 @@
+{% extends "core.html" %}
+
+{% set title = "Search results for " + query %}
+
+{% block container %}
+	{% if results %}
+		<h3>Search results for `{{ query }}`</h3>
+		{#
+		<hr>
+		<h4>Categories</h4>
+		<hr>
+		<h4>Tags</h4>
+		<hr>
+		<h4>Posts</h4>
+		#}
+		{% from 'posts.html' import create_posts_list %}
+		{{ create_posts_list(results) }}
+	{% else %}
+		<h3>No results found for `{{ query }}`!</h3>
+	{% endif %}
+{% endblock container %}

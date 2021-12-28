@@ -1,0 +1,31 @@
+{% extends "core.html" %}
+
+{#
+	listing.html is a merged version of categories.html and tags.html
+	metadata_type in ["categories", "tags"]
+#}
+
+{% set title = metadata_type.capitalize() %}
+{% block head_extension %}
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/listing.css') }}">
+{% endblock %}
+
+{% block container %}
+	<h3>All {{ metadata_type }}</h3>
+
+	<div class="listing_div">
+	{% for name, posts_count in metadata_listing %}
+		<div class="badge_listing_col">
+			{% set badge_color_style = "btn-" + ("success" if metadata_type == "categories" else "secondary") %}
+
+			<a class="btn {{ badge_color_style }} tag_badge" href="{{ url_for(metadata_type) }}/{{ name }}" role="button">
+				{% if metadata_type == "categories" %}
+					<i class="fa fa-code-fork"></i> 
+				{% endif %}
+				{{ name }}
+			</a>
+			<span>x {{ posts_count }}</span>
+		</div>
+	{% endfor %}
+	</div>
+{% endblock container %}

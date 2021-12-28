@@ -1,0 +1,41 @@
+{% extends "core.html" %}
+
+{% set title = post.title %}
+{% block head_extension %}
+	<link rel="stylesheet" href="{{ url_for('pygments_css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/codehilite.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/post.css') }}">
+	<script type="text/javascript" src="{{ url_for('static', filename='js/post.js') }}"></script>
+	<script type="text/javascript" id="MathJax-script" async
+	        src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"></script>
+{% endblock %}
+
+{% block container %}
+	<div class="post_info">
+		<div class="post_heading">
+			<span class="_h1">{{ post.title }}</span> {# fake h1 #}
+			{% if post.pinned is sameas true %}
+				<span class="badge badge-primary pinned_badge" style="vertical-align: middle;"><i class="fa fa-thumb-tack"></i></span>
+			{% endif %}
+		</div>
+		{% from 'posts.html' import create_post_subtitle %}
+		{{ create_post_subtitle(post, false) }}
+	</div>
+	<div class="post_body">
+		<div id="post_left_side" class="left_side">
+			<hr>
+			{{ post.html|safe }}
+		</div>
+		<div id="post_right_side" class="right_side">
+			<div id="toc"></div>
+		</div>
+		<div id="comment" class="left_side">
+			<div id="disqus_thread"></div>
+		</div>
+		<script>
+			create_toc();
+			embed_disqus();
+		</script>
+		<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	</div>
+{% endblock container %}
