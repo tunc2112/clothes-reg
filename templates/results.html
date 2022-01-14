@@ -1,21 +1,16 @@
 {% extends "core.html" %}
 
-{% set title = "Search results for " + query %}
+{% set title = "Demo Results" %}
 
 {% block container %}
-	{% if results %}
-		<h3>Search results for `{{ query }}`</h3>
-		{#
-		<hr>
-		<h4>Categories</h4>
-		<hr>
-		<h4>Tags</h4>
-		<hr>
-		<h4>Posts</h4>
-		#}
-		{% from 'posts.html' import create_posts_list %}
-		{{ create_posts_list(results) }}
-	{% else %}
-		<h3>No results found for `{{ query }}`!</h3>
-	{% endif %}
+	{% for src_filename, tags in content %}
+		<div>
+			<h2>Source image</h2>
+			<img src="{{ src_filename }}">
+		</div>
+		<div>
+			<h2>Result</h2>
+			<div>{{ tags|join(', ') }}</div>
+		</div>
+	{% endfor %}
 {% endblock container %}

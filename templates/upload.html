@@ -3,7 +3,7 @@
 {% set title = "Demo" %}
 
 {% block container %}
-	<h2>Select a file to upload</h2>
+	<h2>Clothes Recognition</h2>
 	<div>
 		{% with messages = get_flashed_messages() %}
 		  {% if messages %}
@@ -15,8 +15,11 @@
 		  {% endif %}
 		{% endwith %}
 	</div>
+	<br>
+	<p>Select a file to upload.</p>
 	<form method="post" action="/" enctype="multipart/form-data">
-		<input type="file" name="file" autocomplete="off" required>
-		<input type="submit" value="Submit">
+		<input type="file" name="file" autocomplete="off" required style="margin-bottom: 1rem;">
+		<br>
+		<input type="submit" class="btn btn-success" value="Submit">
 	</form>
 {% endblock container %}

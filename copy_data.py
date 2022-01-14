@@ -21,7 +21,7 @@ def copy_files():
 			path_parts = path.split("/")
 			clothes_position = "upper" if path_parts[2] in UPPER_LIST else "lower"
 			dest_path = fr'{os.getcwd()}/dataset/{status}/{clothes_position}/{item_id}_{path_parts[-1]}'
-			print('->', dest_part)
+			print('->', dest_path)
 			shutil.copyfile(fr"dataset/{path}", dest_path)
 			# dest_part = fr'{os.getcwd()}/dataset_{clothes_position}/{status}/{path_parts[2]}/{item_id}_{path_parts[-1]}'
 			# print('-->', dest_part)

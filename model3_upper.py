@@ -14,7 +14,7 @@ import multiprocessing as mp
 import numpy as np
 import h5py, os, itertools, heapq
 
-from model import plot_confusion_matrix
+from plot_model import plot_confusion_matrix
 
 # Declaring shape of input images and number of categories to classify
 input_shape = (128, 128, 3)
@@ -24,109 +24,116 @@ UPPER_LIST = [
 	"Jackets_Vests", "Shirts_Polos", "Suiting"
 ]
 
-model = Sequential()
 
-# convolution layer 1, 2
-model.add(Convolution2D(32, (3, 3), padding='same', activation='relu', input_shape=input_shape))
-# model.add(BatchNormalization())
-# model.add(Convolution2D(32, (3, 3), padding='same', activation='relu'))
-# model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Dropout(0.25))
+def create_model():
+    model = Sequential()
 
-# convolution layer 3, 4
-model.add(Convolution2D(64, (3, 3), padding='same', activation='relu'))
-# model.add(BatchNormalization())
-# model.add(Convolution2D(64, (3, 3), padding='same', activation='relu'))
-# model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=(2, 2)))
-# model.add(Dropout(0.25))
+    # convolution layer 1, 2
+    model.add(Convolution2D(32, (3, 3), padding='same', activation='relu', input_shape=input_shape))
+    # model.add(BatchNormalization())
+    # model.add(Convolution2D(32, (3, 3), padding='same', activation='relu'))
+    # model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    # model.add(Dropout(0.25))
 
-# convolution layer 5, 6
-model.add(Convolution2D(128, (3, 3), padding='same', activation='relu'))
-# model.add(BatchNormalization())
-# model.add(Convolution2D(128, (3, 3), padding='same', activation='relu'))
-# model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+    # convolution layer 3, 4
+    model.add(Convolution2D(64, (3, 3), padding='same', activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(Convolution2D(64, (3, 3), padding='same', activation='relu'))
+    # model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    # model.add(Dropout(0.25))
 
-# Fully connected layer
-model.add(Flatten())
-model.add(Dense(128, activation='relu'))
-model.add(BatchNormalization())
-model.add(Dropout(0.5))
-model.add(Dense(11, activation='softmax'))
+    # convolution layer 5, 6
+    model.add(Convolution2D(128, (3, 3), padding='same', activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(Convolution2D(128, (3, 3), padding='same', activation='relu'))
+    # model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
 
-# model.compile(loss = "binary_crossentropy", optimizer = optimizers.SGD(lr=0.01))
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=["accuracy"])
-# model.compile(loss = "categorical_crossentropy", optimizer = optimizers.SGD(lr=0.001), metrics=["accuracy"])
+    # Fully connected layer
+    model.add(Flatten())
+    model.add(Dense(128, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.5))
+    model.add(Dense(11, activation='softmax'))
 
-# Viewing model_configuration
-model.summary()
+    # model.compile(loss = "binary_crossentropy", optimizer = optimizers.SGD(lr=0.01))
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=["accuracy"])
+    # model.compile(loss = "categorical_crossentropy", optimizer = optimizers.SGD(lr=0.001), metrics=["accuracy"])
 
-train_datagen = ImageDataGenerator(
-    rescale = 1./255,
-    width_shift_range = 0.1,
-    height_shift_range = 0.1,
-    rotation_range = 20,
-    zoom_range = 0.2,
-    horizontal_flip = True
-)
-test_datagen = ImageDataGenerator(rescale = 1./255)
+    # Viewing model_configuration
+    model.summary()
 
-training_set = train_datagen.flow_from_directory(
-    './dataset_upper/train',
-    target_size = (128, 128),
-    batch_size = 32,
-    class_mode = 'categorical'
-)
-test_set = test_datagen.flow_from_directory(
-    './dataset_upper/query',
-    target_size = (128, 128),
-    batch_size = 32,
-    class_mode = 'categorical'
-)
+    train_datagen = ImageDataGenerator(
+        rescale = 1./255,
+        width_shift_range = 0.1,
+        height_shift_range = 0.1,
+        rotation_range = 20,
+        zoom_range = 0.2,
+        horizontal_flip = True
+    )
+    test_datagen = ImageDataGenerator(rescale = 1./255)
 
-# Setting callbacks parameters
-checkpointer = ModelCheckpoint(filepath='model3_upper.{epoch:02d}-{val_loss:.2f}.hdf5', verbose=1, save_best_only=True)
-filename='model3_upper.csv'
-csv_log = CSVLogger(filename, separator=',', append=False)
+    training_set = train_datagen.flow_from_directory(
+        './dataset_upper/train',
+        target_size = (128, 128),
+        batch_size = 32,
+        class_mode = 'categorical'
+    )
+    test_set = test_datagen.flow_from_directory(
+        './dataset_upper/query',
+        target_size = (128, 128),
+        batch_size = 32,
+        class_mode = 'categorical'
+    )
 
-# Training the model
-hist = model.fit(
-    training_set,
-    steps_per_epoch = (2375//32),
-    epochs = 150,
-    validation_data = test_set,
-    validation_steps = (592//32),
-    workers = 4,
-    callbacks = [csv_log, checkpointer]
-)
-model.save('model3.h5')
+    # Setting callbacks parameters
+    checkpointer = ModelCheckpoint(filepath='model3_upper.{epoch:02d}-{val_loss:.2f}.hdf5', verbose=1, save_best_only=True)
+    filename='model3_upper.csv'
+    csv_log = CSVLogger(filename, separator=',', append=False)
 
-# plot_loss_accuracy_curves(hist)
+    # Training the model
+    hist = model.fit(
+        training_set,
+        steps_per_epoch = (2375//32),
+        epochs = 150,
+        validation_data = test_set,
+        validation_steps = (592//32),
+        workers = 4,
+        callbacks = [csv_log, checkpointer]
+    )
+    # plot_loss_accuracy_curves(hist)
+    model.save('model3.h5')
 
-test_path = 'dataset_upper/test'
-test_batches = ImageDataGenerator().flow_from_directory(
-    test_path, target_size = (128, 128),
-    classes=UPPER_LIST,
-    batch_size = 90)
 
-test_imgs, test_labels = next(test_batches)
-batch_pred = model.predict_generator(test_batches, steps=1)
+def do_test(model):
+    test_path = 'dataset_upper/test/upper'
+    test_batches = ImageDataGenerator().flow_from_directory(
+        test_path, target_size = (128, 128),
+        classes=UPPER_LIST,
+        batch_size = 90)
 
-# Compute confusion matrix
-cnf_matrix = confusion_matrix(np.argmax(test_labels, axis=1), np.argmax(batch_pred, axis=1))
-np.set_printoptions(precision=2)
-print(cnf_matrix)
+    test_imgs, test_labels = next(test_batches)
+    batch_pred = model.predict_generator(test_batches, steps=1)
 
-# Plot non-normalized confusion matrix
-plt.figure()
-plot_confusion_matrix(
-    cnf_matrix, classes=UPPER_LIST,
-    title='Confusion matrix, without normalization'
-)
-print(classification_report(np.argmax(test_labels, axis=1), np.argmax(batch_pred, axis=1), target_names=UPPER_LIST))
+    # Compute confusion matrix
+    cnf_matrix = confusion_matrix(np.argmax(test_labels, axis=1), np.argmax(batch_pred, axis=1))
+    np.set_printoptions(precision=2)
+    print(cnf_matrix)
 
-print(training_set.class_indices)
-print(test_batches.class_indices)
+    # Plot non-normalized confusion matrix
+    plt.figure()
+    plot_confusion_matrix(
+        cnf_matrix, classes=UPPER_LIST,
+        title='Confusion matrix, without normalization'
+    )
+    print(classification_report(np.argmax(test_labels, axis=1), np.argmax(batch_pred, axis=1), target_names=UPPER_LIST))
+
+    # print(training_set.class_indices)
+    print(test_batches.class_indices)
+
+
+if __name__ == '__main__':
+    do_test(load_model('./model3.h5'))

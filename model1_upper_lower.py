@@ -15,11 +15,11 @@ import multiprocessing as mp
 import numpy as np
 import h5py, os, itertools, heapq
 
-from model import plot_confusion_matrix
+from plot_model import plot_confusion_matrix
 
 # Declaring shape of input images and number of categories to classify
+classes = ['lower', 'upper', 'lower_upper']
 input_shape = (128, 128, 3)
-num_classes = 1
 
 model = Sequential()
 
@@ -52,7 +52,7 @@ model.add(Flatten())
 model.add(Dense(128, activation='relu'))
 model.add(BatchNormalization())
 model.add(Dropout(0.5))
-model.add(Dense(num_classes, activation='sigmoid'))
+model.add(Dense(len(classes), activation='sigmoid'))
 
 # model.compile(loss = "binary_crossentropy", optimizer = optimizers.SGD(lr=0.01))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=["accuracy"])
@@ -71,22 +71,20 @@ train_datagen = ImageDataGenerator(
 test_datagen = ImageDataGenerator(rescale = 1./255)
 
 training_set = train_datagen.flow_from_directory(
-    './dataset/train',
+    './dataset/train_',
     target_size = (128, 128),
-    batch_size = 32,
-    class_mode = 'binary'
+    batch_size = 32
 )
 test_set = test_datagen.flow_from_directory(
     './dataset/query',
     target_size = (128, 128),
-    batch_size = 32,
-    class_mode = 'binary'
+    batch_size = 32
 )
 
 # Setting callbacks parameters
 checkpointer = ModelCheckpoint(filepath='model_upper_lower.{epoch:02d}-{val_loss:.2f}.hdf5', verbose=1, save_best_only=True)
 filename='model1_upper_lower.csv'
-csv_log = CSVLogger(filename, separator=', ', append=False)
+csv_log = CSVLogger(filename, separator=',', append=False)
 
 # Training the model
 hist = model.fit(
@@ -98,14 +96,13 @@ hist = model.fit(
     workers = 4,
     callbacks = [csv_log, checkpointer]
 )
-model.save('model1.h5')
-
 # plot_loss_accuracy_curves(hist)
+model.save('model1.h5')
 
 test_path = 'dataset/test'
 test_batches = ImageDataGenerator().flow_from_directory(
     test_path, target_size = (128, 128),
-    classes=['lower', 'upper'],
+    classes=classes,
     batch_size = 180
 )
 
@@ -119,15 +116,16 @@ print(cnf_matrix)
 
 # Plot non-normalized confusion matrix
 plt.figure()
-plot_confusion_matrix(cnf_matrix, classes=['lower', 'upper'],
-                      title='Confusion matrix, without normalization')
-
-classes=['lower', 'upper']
+plot_confusion_matrix(
+    cnf_matrix, classes=classes,
+    title='Confusion matrix, without normalization'
+)
 print(classification_report(np.argmax(test_labels, axis=1), np.argmax(batch_pred, axis=1), target_names=classes))
 
 print(training_set.class_indices)
 print(test_batches.class_indices)
 
+'''
 # img = image.load_img('./dataset/test/lower/Acid_Wash_-_Skinny_Jeans_img_00000019.jpg', target_size=(128, 128))
 img = image.load_img('./dataset/train/upper/Abstract_Print_Peasant_Blouse_img_00000060.jpg', target_size=(128, 128))
 
@@ -159,3 +157,4 @@ plt.figure(figsize=(5, 5))
 plt.imshow(img)
 # plots(images)  
 print('Predict below item is a : ', label[classes[0][0]])
+'''
